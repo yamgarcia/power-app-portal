@@ -1,0 +1,6 @@
+- adx_communityforumaccesspermission_webrole:
+  - 9b887fb8-b512-ed11-b83d-000d3a54e5f5
+  adx_communityforumaccesspermissionid: a7fc50ac-b512-ed11-b83d-000d3a54e5f5
+  adx_forumid: a6fc50ac-b512-ed11-b83d-000d3a54e5f5
+  adx_name: Full Control
+  adx_right: 1

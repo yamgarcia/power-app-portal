@@ -1,0 +1,12 @@
+adx_append: true
+adx_appendto: true
+adx_create: true
+adx_delete: true
+adx_entitylogicalname: account
+adx_entityname: Accounts Manager
+adx_entitypermission_webrole:
+- 9b887fb8-b512-ed11-b83d-000d3a54e5f5
+adx_entitypermissionid: 83d473f7-3414-ed11-b83d-000d3a54e5f5
+adx_read: true
+adx_scope: 756150000
+adx_write: true

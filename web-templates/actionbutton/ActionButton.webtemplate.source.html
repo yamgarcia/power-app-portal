@@ -1,0 +1,159 @@
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous" />
+<style>
+    .btn_action {
+        cursor: pointer;
+        outline: none;
+        /* make button partially transperent */
+        opacity: 0.8;
+        /* fix our button in the right buttom corner */
+        position: fixed;
+        bottom: 23px;
+        right: 28px;
+        /* place it on top of the content of the page */
+        z-index: 5;
+        display: flex;
+        align-items: baseline;
+        font-size: 18px;
+        border-radius: 20px;
+        -webkit-box-shadow: 0px 0px 6px 0px #000000;
+        box-shadow: 0px 0px 6px 0px #000000;
+    }
+    /* remove transparency on hover */
+    .btn_action:hover {
+        opacity: none;
+    }
+    .btn_action__text {
+        text-transform: uppercase;
+    }
+    .btn_action__icon {
+        margin-right: 6px;
+    }
+    .form_container {
+        background-color: white;
+        display: none;
+        flex-direction: column;
+        position: fixed;
+        bottom: 20px;
+        right: 15px;
+        /* add small border */
+        border: 3px solid #f1f1f1;
+        /* place it on top of the content of the page */
+        /* it must be bigger then z-index of open button */
+        z-index: 9;
+        width: 360px;
+        height: 350px;
+        padding: 15px;
+    }
+    .form_container__input {
+        margin-bottom: 15px;
+    }
+    .form_container__close {
+        cursor: pointer;
+        align-self: flex-end;
+    }
+</style>
+<script>
+    (function (webapi, $) {
+        function safeAjax(ajaxOptions) {
+            var deferredAjax = $.Deferred();
+            shell
+                .getTokenDeferred()
+                .done(function (token) {
+                    // add headers for AJAX
+                    if (!ajaxOptions.headers) {
+                        $.extend(ajaxOptions, {
+                            headers: {
+                                __RequestVerificationToken: token,
+                            },
+                        });
+                    } else {
+                        ajaxOptions.headers["__RequestVerificationToken"] = token;
+                    }
+                    $.ajax(ajaxOptions)
+                        .done(function (data, textStatus, jqXHR) {
+                            validateLoginSession(data, textStatus, jqXHR, deferredAjax.resolve);
+                        })
+                        .fail(deferredAjax.reject); //AJAX
+                })
+                .fail(function () {
+                    deferredAjax.rejectWith(this, arguments); // on token failure pass the token AJAX and args
+                });
+            return deferredAjax.promise();
+        }
+        webapi.safeAjax = safeAjax;
+    })((window.webapi = window.webapi || {}), jQuery);
+    function openForm() {
+        $("#myForm").css("display", "flex");
+    }
+    function closeForm() {
+        $("#myForm").css("display", "none");
+    }
+    function createProspect() {
+        $("#sbmBtn").text("Sending...");
+        const firstName = $("#fname").val();
+        const lastName = $("#lname").val();
+        const email = $("#email").val();
+        webapi.safeAjax({
+            type: "POST",
+            url: "/_api/leads",
+            contentType: "application/json",
+            data: JSON.stringify({
+                firstname: firstName,
+                lastname: lastName,
+                emailaddress1: email,
+            }),
+            success: function (res, status, xhr) {
+                $("#sbmBtn").text("Success!");
+                $("#sbmBtn").removeClass("btn-primary").addClass("btn-success");
+                console.log("entityID: " + xhr.getResponseHeader("entityid"));
+            },
+            error: function (xhr, status, error) {
+                $("#sbmBtn").text("Error!");
+                $("#sbmBtn").removeClass("btn-primary").addClass("btn-danger");
+                console.error("xhr:", xhr);
+                console.error("Error occured:", error);
+                console.log("Error responseText: " + xhr.responseText);
+            },
+        });
+    }
+    $(document).ready(function () {
+        $("#closeBtn").click(function () {
+            closeForm();
+        });
+    });
+</script>
+<button class="btn_action btn btn-primary" onclick="openForm();">
+    <i class="fas fa-paper-plane btn_action__icon"></i>
+    <span class="btn_action__text">Contact Us</span>
+</button>
+<div class="form_container" id="myForm">
+    <i id="closeBtn" class="fas fa-times form_container__close"></i>
+    <label for="fname">First Name</label>
+    <input
+        class="form_container__input"
+        type="text"
+        id="fname"
+        name="firstname"
+        placeholder="Your 
+name.."
+    />
+    <label for="lname">Last Name</label>
+    <input
+        class="form_container__input"
+        type="text"
+        id="lname"
+        name="lastname"
+        placeholder="Your last 
+name.."
+    />
+    <label for="email">Email</label>
+    <input
+        class="form_container__input"
+        type="text"
+        id="email"
+        name="email"
+        placeholder="Your 
+email.."
+    />
+    <button class="btn btn-primary" id="sbmBtn" onclick="createProspect();">Submit</button>
+</div>

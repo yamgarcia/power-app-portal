@@ -1,0 +1,23 @@
+{% fetchxml accounts %}
+<fetch>
+ <entity name="account">
+ <attribute name="name" />
+ <attribute name="numberofemployees" />
+ <attribute name="revenue" />
+ <filter type="and">
+    <condition attribute="revenue" operator="not-null" />
+    <condition attribute="numberofemployees" operator="not-null" />
+ </filter>
+ </entity>
+</fetch>
+{% endfetchxml %}
+[
+{% for account in accounts.results.entities limit:15 -%}
+ {
+ "x": {{ account.numberofemployees }},
+ "y": {{ account.revenue }},
+ "z": {{ account.revenue | divided_by: account.numberofemployees }},
+ "name": "{{ account.name }}"
+ }{% unless forloop.last %},{% endunless %}
+{% endfor -%}
+]

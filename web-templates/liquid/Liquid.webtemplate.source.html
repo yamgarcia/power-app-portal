@@ -1,0 +1,94 @@
+{% block main %}
+ <h2>Introduction</h2>
+ {% if user %}
+ Hello, {{ user.fullname | upcase }}
+ {% else %}
+ Hello world!
+ {% endif %}
+ {% unless user.fullname contains 'Admin' %}
+ <div class="well">
+ <b>You are not an Admin!</b>
+ </div>
+ {% endunless %}
+ <h2>Types</h2>
+ <h4>Variable</h4>
+ {% assign foo = "bar " %}
+ {{ foo }}
+ <br>
+ {% assign words = "This is a sentence" %}
+ Sentence = "{{ words }}"<br>
+ {% assign words = words | split: " " %}
+ The first word of the sentence is "{{ words | first }}".<br>
+ The last word of the sentence is "{{ words | last }}".
+ <br><br>
+ <h4>String</h4>
+ {% assign string_a = "Hello World!" %}
+ {% assign string_b = 'Single quotes work too.' %}
+ {{ string_a }}
+ {{ string_b }}
+ <br><br>
+ <h4>Number</h4>
+ {% assign pi = 3.14159 %}
+ PI (variable): {{ pi }} <br>
+ PI (floor): {{ pi | floor }} <br>
+ PI (integer): {{ pi | integer }} <br>
+ PI (decimal): {{ pi | decimal }} <br>
+ PI (round:3): {{ pi | round:3 }}
+ <br><br>
+<h4>Boolean</h4>
+ {% assign x = true %}
+ {% assign y = false %}
+ {% if x %}
+ This will be rendered, because x is true.
+ {% endif %}
+ <br><br>
+ <h4>Date</h4>
+ {{ page.modifiedon | date: 'f' }} <br>
+ {{ now | date: 'MMMM dd, yyyy' }}
+ <br><br>
+ <h4>Dictionary</h4>
+ {% if request.params.size > 0 %}
+ Request has {{ request.params.size }} params.
+ {% endif %}
+ <br><br>
+ <h2>Control Flow</h2>
+ {% assign value = 3 %}
+ {% case value %}
+ {% when 1 %}
+ This is number ONE <br>
+ {% when 2 %}
+ This is number TWO <br>
+ {% else %}
+ This is number THREE!! <br>
+ {% endcase %}
+ <h2>Iteration Flow</h2>
+ {% assign speakers = 'Sean, Avni, Juan, Joanna' | split: ',' %}
+ 
+ <h4>Full List</h4>
+ {% for speaker in speakers %}
+ {{ speaker }},
+ {% endfor %}
+ <h4>First 3</h4>
+ {% for speaker in speakers limit:3 %}
+ {{ speaker }},
+ {% endfor %}
+ <h4>Offset 3</h4>
+ {% for speaker in speakers offset:3 %}
+ {{ speaker }},
+ {% endfor %}
+ <h4>Reversed + Cycled</h4>
+ {% for speaker in speakers reversed %}
+ <button type="button" class="btn {% cycle 'btn-primary', 'btn-warning', 'btn-danger', 'btn_success' %}"> {{ speaker }} </button>
+ {% endfor %}
+ <h4>Forloop Object</h4>
+ {% for speaker in speakers %}
+ {% if forloop.first %} <b> {% endif %}
+ {{ speaker }}
+ {% if forloop.first %} </b> {% endif %}
+ {% if forloop.last == false %},{% endif %}
+ {% endfor %}
+ {% comment %}
+ This is a comment
+ So is this
+ {% endcomment %}
+{% endblock %}

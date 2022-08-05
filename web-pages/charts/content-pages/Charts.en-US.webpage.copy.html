@@ -1,0 +1,52 @@
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/highcharts-more.js"></script><figure>
+    <div class="mychart"></div>
+</figure>
+<p>This website uses sample data for illustration purposes. You can create pages using any of the multiple templates available.</p>
+<div class="row sectionBlockLayout text-left" style="min-height: 100px; padding: 8px; margin: 0px;">
+    <div class="container" style="display: flex; flex-wrap: wrap;">
+        <div class="col-md-12 columnBlockLayout">
+            <script>
+                function makeChart(rData) {
+                    for (let i = 0; i < rData.length; i++) {
+                        rData[i].x = rData[i].x = "" ? 0 : Number(rData[i].x);
+                        rData[i].y = rData[i].y = "" ? 0 : Number(rData[i].y);
+                        rData[i].z = rData[i].z = "" ? 0 : Number(rData[i].z);
+                    }
+                    console.log(rData);
+                    Highcharts.chart($(".mychart")[0], {
+                        title: {
+                            text: "Customers efficiency",
+                        },
+                        legend: {
+                            enabled: false,
+                        },
+                        xAxis: {
+                            title: {
+                                text: "Number of employees",
+                            },
+                        },
+                        yAxis: {
+                            title: {
+                                text: "Turnover ($K)",
+                            },
+                        },
+                        tooltip: {
+                            pointFormat: "<strong>{point.name}</strong><br/>Employed: {point.x}<br>Turnover ($K):${point.y}",
+                            headerFormat: "",
+                        },
+                        series: [
+                            {
+                                type: "bubble",
+                                data: rData,
+                            },
+                        ],
+                    });
+                }
+                $(document).ready(function () {
+                    $.get("/training-content/get-accounts", "json", makeChart);
+                });
+            </script>
+        </div>
+    </div>
+</div>
